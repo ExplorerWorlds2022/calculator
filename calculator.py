@@ -92,7 +92,7 @@ def translate_words():
             expression.extend([num, operations[word]])
             num = 0
         else:
-            print(f"""Неккоректный ввод в слове {word}!""")
+            print(f""" Неккоректный ввод в слове {word}!""")
             exit(0)
 
     if num != 0:
