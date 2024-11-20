@@ -100,7 +100,8 @@ def translate_words(string):
                 expression.extend([num, operations[word]])
                 num = None
             else:
-                raise Exception("Число не соответсвует диапазону от")
+                print(f'Все числа должны быть от 0 до 100!')
+                raise Exception()
 
     if num != None:
         expression.append(num)
@@ -121,7 +122,7 @@ def translate_number(num):
         else:
             dig = num - num % 10**pos
             num -= dig
-            if dig == 0:
+            if dig == 0 and num != 0:
                 continue
             result.append(num_to_words[dig])
 
