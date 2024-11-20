@@ -65,11 +65,7 @@ def main():
 
 
 def calculate(expr):
-    result = []
-    for oper in range(0, len(expr), 3):
-        result = perform_operation(expr[oper], expr[oper + 1], expr[oper + 2])
-
-    return result
+    return perform_operation(expr[0], expr[1], expr[2])
 
 
 def perform_operation(num1, operation, num2):
@@ -83,19 +79,19 @@ def perform_operation(num1, operation, num2):
 def translate_words():
     words = input().split()
     expression = []
-    num = 0
+    num = None
 
     for word in words:
         if word in words_to_num:
-            num += words_to_num[word]
+            num = words_to_num[word] if num == None else num + words_to_num[word]
         elif word in operations:
             expression.extend([num, operations[word]])
-            num = 0
+            num = None
         else:
-            print(f""" Неккоректный ввод в слове {word}!""")
-            exit(0)
+            print(f"""Неккоректный ввод в слове {word}!""")
+            translate_words()
 
-    if num != 0:
+    if num != None:
         expression.append(num)
 
     return expression
@@ -108,15 +104,15 @@ def translate_number(num):
         num = -num
 
     for i in range(len(str(num)) - 1, -1, -1):
-        if i == 1 and 11 <= num <= 19:
-            dig = num
-            result.append(num_to_words[dig])
+        dig = None
+        if 11 <= num <= 19:
+            result.append(num_to_words[num])
             break
         else:
             dig = num - num % 10**i
             num -= dig
 
-        if dig != 0:
+        if dig != None:
             result.append(num_to_words[dig])
 
     return " ".join(result)
