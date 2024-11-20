@@ -58,10 +58,21 @@ operations = {
 
 def main():
     print(
-        '''Добро пожаловать в калькулятор! \nВведите <число> <операция> <число> в формате "двадцать пять плюс тринадцать один". \nВводите только числа от 0 до 100. Из операций доступны только "плюс", "минус", "умножить"'''
+        """Добро пожаловать в калькулятор! 
+Введите <число> <операция> <число> в формате "двадцать пять плюс тринадцать один". 
+Вводите только числа от 0 до 100. Из операций доступны только "плюс", "минус", "умножить"
+Введите "выход", чтобы выйти из программы"""
     )
-    expression = calculate(translate_words())
-    print(translate_number(expression))
+
+    while True:
+        string = input("Выражение: ")
+        if string == "выход":
+            break
+
+        try:
+            print(translate_number(calculate(translate_words(string))))
+        except:
+            print("Неправильная запись выражения!")
 
 
 def calculate(expr):
@@ -76,8 +87,8 @@ def perform_operation(num1, operation, num2):
     return num1 * num2
 
 
-def translate_words():
-    words = input().split()
+def translate_words(string):
+    words = string.split()
     expression = []
     num = None
 
@@ -85,11 +96,11 @@ def translate_words():
         if word in words_to_num:
             num = words_to_num[word] if num == None else num + words_to_num[word]
         elif word in operations:
-            expression.extend([num, operations[word]])
-            num = None
-        else:
-            print(f"""Неккоректный ввод в слове {word}!""")
-            translate_words()
+            if 0 <= num <= 100:
+                expression.extend([num, operations[word]])
+                num = None
+            else:
+                raise Exception("Число не соответсвует диапазону от")
 
     if num != None:
         expression.append(num)
@@ -103,16 +114,15 @@ def translate_number(num):
         result.append("минус")
         num = -num
 
-    for i in range(len(str(num)) - 1, -1, -1):
-        dig = None
+    for pos in range(len(str(num)) - 1, -1, -1):
         if 11 <= num <= 19:
             result.append(num_to_words[num])
             break
         else:
-            dig = num - num % 10**i
+            dig = num - num % 10**pos
             num -= dig
-
-        if dig != None:
+            if dig == 0:
+                continue
             result.append(num_to_words[dig])
 
     return " ".join(result)
