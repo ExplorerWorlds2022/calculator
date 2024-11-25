@@ -106,7 +106,7 @@ def translate_number(num):
         else:
             dig = num - num % 10**pos
             num -= dig
-            if dig == 0 and num != 0:
+            if dig == 0 and len(result) != 0:
                 continue
             result.append(to_words[dig])
 
