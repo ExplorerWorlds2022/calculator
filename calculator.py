@@ -1,4 +1,4 @@
-words_to_num = {
+to_num = {
     "ноль": 0,
     "один": 1,
     "два": 2,
@@ -36,18 +36,10 @@ words_to_num = {
     "семьсот": 700,
     "восемьсот": 800,
     "девятьсот": 900,
-    "одна тысяча": 1000,
-    "две тысячи": 2000,
-    "три тысячи": 3000,
-    "четыре тысячи": 4000,
-    "пять тысяч": 5000,
-    "шесть тысяч": 6000,
-    "семь тысяч": 7000,
-    "восемь тысяч": 8000,
-    "девять тысяч": 9000,
+    "тысяча": 1000
 }
 
-num_to_words = {value: key for key, value in words_to_num.items()}
+to_words = {value: key for key, value in to_num.items()}
 
 operations = {
     "плюс": "+",
@@ -70,21 +62,9 @@ def main():
             break
 
         try:
-            print(translate_number(calculate(translate_words(string))))
-        except:
-            print("Неправильная запись выражения!")
-
-
-def calculate(expr):
-    return perform_operation(expr[0], expr[1], expr[2])
-
-
-def perform_operation(num1, operation, num2):
-    if operation == "+":
-        return num1 + num2
-    elif operation == "-":
-        return num1 - num2
-    return num1 * num2
+            print(translate_number(eval(translate_words(string))))
+        except ValueError as err1:
+            print(err1)
 
 
 def translate_words(string):
@@ -93,20 +73,24 @@ def translate_words(string):
     num = None
 
     for word in words:
-        if word in words_to_num:
-            num = words_to_num[word] if num == None else num + words_to_num[word]
+        if word in to_num:
+            num = to_num[word] if num == None else num + to_num[word]
         elif word in operations:
             if 0 <= num <= 100:
-                expression.extend([num, operations[word]])
+                expression.extend([str(num), operations[word]])
                 num = None
             else:
-                print(f'Все числа должны быть от 0 до 100!')
-                raise Exception()
+                raise ValueError('Все числа должны быть от 0 до 100!')
+        else:
+            raise ValueError(f'Незнакомое слово "{word}"!')
 
     if num != None:
-        expression.append(num)
+        if 0 <= num <= 100:
+            expression.append(str(num))
+        else:
+            raise ValueError('Все числа должны быть от 0 до 100!')
 
-    return expression
+    return ' '.join(expression)
 
 
 def translate_number(num):
@@ -117,14 +101,14 @@ def translate_number(num):
 
     for pos in range(len(str(num)) - 1, -1, -1):
         if 11 <= num <= 19:
-            result.append(num_to_words[num])
+            result.append(to_words[num])
             break
         else:
             dig = num - num % 10**pos
             num -= dig
             if dig == 0 and num != 0:
                 continue
-            result.append(num_to_words[dig])
+            result.append(to_words[dig])
 
     return " ".join(result)
 
